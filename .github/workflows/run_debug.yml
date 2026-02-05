@@ -1,6 +1,6 @@
-name: Test Kick Proxy
+name: Test Kick Lightweight
 
-# Ye tabhi chalega jab aap 'Run workflow' button dabayenge
+# Manual Trigger
 on:
   workflow_dispatch:
 
@@ -9,22 +9,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Aapka code download karega
+      # 1. Code Download
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # 2. Python setup karega
+      # 2. Python Setup
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
 
-      # 3. Zaruri libraries install karega
-      # 'curl_cffi' add kiya hai Cloudflare bypass ke liye
+      # 3. Dependencies (Sirf standard requests, curl_cffi hata diya)
       - name: Install Dependencies
         run: |
-          pip install requests curl_cffi
+          pip install requests urllib3
 
-      # 4. Aapki Debug Script chalayega
+      # 4. Script Run
       - name: Run Debug Script
         run: python debug_kick.py
