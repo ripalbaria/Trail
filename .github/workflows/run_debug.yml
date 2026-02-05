@@ -1,6 +1,6 @@
 name: Test Kick Proxy
 
-# Ye tabhi chalega jab aap 'Run workflow' button dabayenge (Manual Trigger)
+# Ye tabhi chalega jab aap 'Run workflow' button dabayenge
 on:
   workflow_dispatch:
 
@@ -20,11 +20,11 @@ jobs:
           python-version: '3.9'
 
       # 3. Zaruri libraries install karega
+      # 'curl_cffi' add kiya hai Cloudflare bypass ke liye
       - name: Install Dependencies
         run: |
-          pip install requests urllib3
+          pip install requests curl_cffi
 
       # 4. Aapki Debug Script chalayega
       - name: Run Debug Script
         run: python debug_kick.py
-
