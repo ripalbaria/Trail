@@ -29,4 +29,13 @@ def test_direct_connection():
                 print(f"   🔗 Link: {data['playback_url'][:60]}...")
             else:
                 print("   ⚠️ Connected but JSON key missing.")
-        elif resp.status_code ==
+        elif resp.status_code == 403:
+            print("   ❌ BLOCKED (403): GitHub IP Blacklisted hai. Proxy lagani padegi.")
+        else:
+            print(f"   ❌ FAILED with Status: {resp.status_code}")
+
+    except Exception as e:
+        print(f"\n   ❌ ERROR: {e}")
+
+if __name__ == "__main__":
+    test_direct_connection()
