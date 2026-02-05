@@ -1,9 +1,5 @@
-import requests
-import urllib3
+from curl_cffi import requests # Special Library for bypassing Cloudflare
 import time
-
-# SSL Warnings disable (Clean logs)
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # --- ✅ WORKING ORACLE PROXY DETAILS ---
 ORACLE_IP = "161.118.179.243"
@@ -21,50 +17,44 @@ def get_proxy_string():
 def test_github_connection():
     proxy_url = get_proxy_string()
     
-    print(f"🚀 STARTING GITHUB PROXY TEST...")
+    print(f"🚀 STARTING CLOUDFLARE BYPASS TEST...")
     print(f"   Target: {TARGET_URL}")
-    print(f"   Proxy IP: {ORACLE_IP}:{ORACLE_PORT}")
+    print(f"   Proxy: {ORACLE_IP}:{ORACLE_PORT}")
     print("-" * 50)
     
+    # curl_cffi use kar rahe hain (requests ki jagah)
     proxies = {
         "http": proxy_url,
         "https": proxy_url
     }
     
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-        "Accept": "application/json"
-    }
-
     try:
-        print("   ⏳ Connecting to Kick via Proxy...")
+        print("   ⏳ Connecting with Real Chrome Fingerprint...")
         
-        # 15 second timeout diya hai taaki connection establish ho sake
-        resp = requests.get(TARGET_URL, headers=headers, proxies=proxies, timeout=15, verify=False)
+        # 'impersonate="chrome"' ye sabse bada jadu hai!
+        resp = requests.get(
+            TARGET_URL, 
+            proxies=proxies, 
+            impersonate="chrome110",  # Cloudflare ko lagega ye Chrome v110 hai
+            timeout=15
+        )
         
         print(f"   📡 STATUS CODE: {resp.status_code}")
         
         if resp.status_code == 200:
             data = resp.json()
             if "playback_url" in data:
-                print("\n   🎉 SUCCESS! GitHub ne Kick ka data khinch liya!")
+                print("\n   🎉 SUCCESS! Cloudflare Bypass Ho Gaya!")
                 print(f"   🔗 M3U8 Link: {data['playback_url'][:60]}...")
-                print("   ✅ Proxy is WORKING perfectly on GitHub Actions.")
             else:
-                print("   ⚠️ Connected (200 OK), but 'playback_url' not found in JSON.")
-                print(f"   Response Preview: {str(data)[:100]}")
-                
+                print("   ⚠️ Connected but JSON key missing.")
         elif resp.status_code == 403:
-            print("   ❌ BLOCKED (403): Kick ne request reject kar di (Cloudflare).")
-        elif resp.status_code == 407:
-            print("   ❌ AUTH FAIL (407): Username/Password galat hai.")
+            print("   ❌ STILL BLOCKED (403): Cloudflare abhi bhi pakad raha hai.")
         else:
             print(f"   ❌ FAILED with Status: {resp.status_code}")
-            print(f"   Response: {resp.text[:200]}")
 
     except Exception as e:
-        print(f"\n   ❌ CONNECTION ERROR: {e}")
-        print("   (Check if Proxy Server is running and Port 48923 is Open)")
+        print(f"\n   ❌ ERROR: {e}")
 
 if __name__ == "__main__":
     test_github_connection()
