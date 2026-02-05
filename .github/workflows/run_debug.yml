@@ -1,0 +1,30 @@
+name: Test Kick Proxy
+
+# Ye tabhi chalega jab aap 'Run workflow' button dabayenge (Manual Trigger)
+on:
+  workflow_dispatch:
+
+jobs:
+  debug_test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Aapka code download karega
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # 2. Python setup karega
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      # 3. Zaruri libraries install karega
+      - name: Install Dependencies
+        run: |
+          pip install requests urllib3
+
+      # 4. Aapki Debug Script chalayega
+      - name: Run Debug Script
+        run: python debug_kick.py
+
